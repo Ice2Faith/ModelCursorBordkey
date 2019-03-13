@@ -116,8 +116,8 @@ void CreateBash()
 							}
 							if (i > Norlen)
 								continue;
-							fprintf_s(bashfile, "k %d 1 30\n", Norkey[i]);
-							fprintf_s(bashfile, "k %d 0 30\n", Norkey[i]);
+							fprintf_s(bashfile, "k %d 1 30 %c\n", Norkey[i], Norchar[i]);
+							fprintf_s(bashfile, "k %d 0 30 %c\n", Norkey[i], Norchar[i]);
 						}
 						else
 						{
@@ -145,9 +145,9 @@ void CreateBash()
 								break;
 							}
 								
-							fprintf_s(bashfile, "k %d 1 %d\n", Spekey[i], wtime);
+							fprintf_s(bashfile, "k %d 1 %d %s\n", Spekey[i], wtime, Spechar[i]);
 							if (Spekey[i]<281)
-							fprintf_s(bashfile, "k %d 0 %d\n", Spekey[i], wtime);
+								fprintf_s(bashfile, "k %d 0 %d %s\n", Spekey[i], wtime, Spechar[i]);
 						}
 					}
 					fclose(bashfile);
@@ -188,8 +188,8 @@ void CreateBash()
 							}
 							if (j> Norlen)
 								continue;
-							sprintf_s(outfile[i], "k %d 1 30\n", Norkey[j]);
-							sprintf_s(outfile[conbilen * 2 - i], "k %d 0 30\n", Norkey[j]);
+							sprintf_s(outfile[i], "k %d 1 30 %c\n", Norkey[j], Norchar[j]);
+							sprintf_s(outfile[conbilen * 2 - i], "k %d 0 30 %c\n", Norkey[j], Norchar[j]);
 						}
 						else
 						{
@@ -201,8 +201,8 @@ void CreateBash()
 							}
 							if (j > Spelen)
 								continue;
-							sprintf_s(outfile[i], "k %d 1 30\n", Spekey[j]);
-							sprintf_s(outfile[conbilen * 2 - i], "k %d 0 30\n", Spekey[j]);
+							sprintf_s(outfile[i], "k %d 1 30 %s\n", Spekey[j], Spechar[j]);
+							sprintf_s(outfile[conbilen * 2 - i], "k %d 0 30 %s\n", Spekey[j], Spechar[j]);
 						}
 
 					}
@@ -247,7 +247,7 @@ void ReadClickEvent(char * name)
 			subt *= 300;
 			if (subt == 0)
 				subt = 300;
-			fprintf(click, "c %d %d %d %d\n", point.x, point.y, 1, subt);
+			fprintf(click, "c %d %d %d %d CLEFT\n", point.x, point.y, 1, subt);
 			cout << "左键";
 		}
 		if (get == '2')
@@ -258,7 +258,7 @@ void ReadClickEvent(char * name)
 				subt *= 300;
 			if (subt == 0)
 				subt = 300;
-			fprintf(click, "c %d %d %d %d\n", point.x, point.y, 0, subt);
+			fprintf(click, "c %d %d %d %d CRIGHT\n", point.x, point.y, 0, subt);
 			cout << "右键";
 		}
 		get = '\0';
@@ -320,6 +320,7 @@ void OperateMedel(char * FileName)
 	while (!feof(fp))
 	{
 		fscanf_s(fp, "%c", &mode);
+		char temp[20] = { 0 };
 		if (mode == 'k')
 		{
 			count = fscanf_s(fp, "%d%d%d", &key, &set, &wt);
@@ -555,8 +556,8 @@ void help()
 			"-------------------------------",
 			"执行文件说明：",
 			"行首执行标识符只有c和k，其他标识会被忽略",
-			"参数说明：k 按键 状态 时延",
-			"例如：k 91 1 30",
+			"参数说明：k 按键 状态 时延 (操作类型提示)",
+			"例如：k 91 1 30 （WIN）",
 			"标识是键盘操作按下Win键，延迟30毫秒后执行下一条",
 			"状态：1按下，0抬起",
 			"因此常规点击如下",
@@ -567,9 +568,9 @@ void help()
 			"k 83 1 30",
 			"k 83 0 30",
 			"k 91 0 30",
-			"参数说明：k 横坐标 纵坐标 状态 时延",
-			"例如：c 18 854 1 1200",
-			"标识是鼠标操作右键点击位置18-854的位置，延迟1200毫秒后执行下一条",
+			"参数说明：k 横坐标 纵坐标 状态 时延 (操作类型提示)",
+			"例如：c 18 854 1 1200 CLEFT",
+			"标识是鼠标操作左键点击位置18-854的位置，延迟1200毫秒后执行下一条",
 			"18：从左到右第18个点",
 			"854：从上到下第854个点",
 			"状态：1左键单击，0右键单击",
