@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
 	rename(argv[0], "模拟用户脚本版.exe");
 	system("title 模拟用户脚本版 designer Ice2Faith");
 	system("color 02");
+	srand((unsigned)time(NULL));
 	if (argc > 1)
 	{
 		if (strcmp(argv[1], "help") == 0)
@@ -134,7 +135,6 @@ void CreateBash()
 							switch (Spekey[i])
 							{
 							case 281:
-							case 282:
 								wtime = 1000;
 								break;
 							case 283:
@@ -284,7 +284,6 @@ void ExtenBordyKey(int key, int set, int wt)
 				char Norchar[64] = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
 				int Norkey[64] = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90};
 				int Norlen = strlen(Norchar);
-				srand((unsigned)time(NULL));
 				int randkey = rand()% Norlen;
 				int key = Norkey[randkey];
 				MedelKebord(key, set, wt);
@@ -550,7 +549,7 @@ void help()
 			"附加按键脚本没有状态0标志，因此只有一行",
 			"当然如果你的脚本有状态0标志行，也会被忽略",
 			"WAITRUN\t\t\t281\t\t暂停脚本运行一秒", 
-			"RANDIN\t\t\t282\t\t随机输入字符1秒一个",
+			"RANDIN\t\t\t282\t\t随机输入字符1秒15个",
 			"CMD\t\t\t283\t\t打开CMD控制台", 
 			"POWERSHELL\t\t284\t\t打开Powershell",
 			"-------------------------------",
