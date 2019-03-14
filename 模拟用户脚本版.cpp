@@ -13,6 +13,7 @@ char Menu();
 void OperateMedel(char * FileName);
 void ModelCursor(int x, int y, int cltype, int stime);
 void MedelKebord(int key, int set, int wt);
+void GetFilesList(int * len, char *list[]);
 int main(int argc, char *argv[])
 {
 	rename(argv[0], "模拟用户脚本版.exe");
@@ -33,6 +34,13 @@ int main(int argc, char *argv[])
 		{
 		case '1':
 		{
+					char listbody[100][1024] = { 0 };
+					char * list[100] = { 0 };
+					for (int i = 0; i < 100; i++)
+						list[i] = listbody[i];
+					int len = 0;
+					GetFilesList(&len, list);
+					char filename[1024] = { 0 };
 					cout << "\n\t文件名模式" << endl;
 					cout << "---------------------------" << endl;
 					cout << "\t1.默认后缀(_MU.txt)" << endl;
@@ -48,20 +56,29 @@ int main(int argc, char *argv[])
 						exit(0);
 					if (model == '2')
 					{
-						cout << "输入1弹出目录文件进行复制文件名，否则跳过\n>/";
+						cout << "输入1弹出目录文件进行选择，否则手动输入\n>/";
 						char open = _getch();
 						printf("%c\n", open);
 						if (open == '1')
 						{
 							cout << "Found those files:\n-----------------------------" << endl;
-							system("dir *.* /b");
-							cout << "-----------------------------\nView end." << endl;
+							for (int i = 0; i < len; i++)
+							{
+								cout << i <<". "<< list[i] << endl;
+							}
+							cout << "-----------------------------\nView end,Please select\n>/ ";
+							int sel = -1;
+							while (sel<0 || sel>len)
+								cin >> sel;
+							strcpy_s(filename, list[sel]);
+						}
+						else
+						{
+							cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
+							cin >> filename;
 						}
 							
 					}
-					cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
-					char filename[1024] = { 0 };
-					cin >> filename;
 					if (model == '1')
 						strcat_s(filename, "_MU.txt");
 					cout << "Run >> " << filename << endl;
@@ -87,6 +104,25 @@ int main(int argc, char *argv[])
 	}
 
 	return 0;
+}
+void GetFilesList(int * len, char *list[])
+{
+	remove("temp.tp");
+	system("dir *.* /b >> temp.tp");
+	FILE * FileList = NULL;
+	fopen_s(&FileList, "temp.tp", "r");
+	int llen=0;
+	while (!feof(FileList))
+	{
+		fgets(list[llen], 1024, FileList);
+		int slen = strlen(list[llen]);
+		list[llen][slen - 1] = '\0';
+		if ((strcmp(list[llen], "temp.tp")!=0 )&& slen!=0)
+			llen++;
+	}
+	*len = llen;
+	fclose(FileList);
+	remove("temp.tp");
 }
 char Menu()
 {
