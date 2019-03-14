@@ -114,10 +114,13 @@ char Menu()
 }
 void CreateBash()
 {
-	char filename[200] = { 0 };
+	char filename[1024] = { 0 };
 	cout << "现在你可以创建一个脚本" << endl;
 	cout << "请输入脚本名字\n>/ ";
 	cin >> filename;
+	fflush(stdin);
+	cout << "输入 1 使用默认后缀，否则不使用"<<endl;
+	if (_getch() == '1')
 	strcat_s(filename, "_MU.txt");
 	cout << "正在为你创建脚本：" << filename << endl;
 	Sleep(1200);
@@ -162,7 +165,7 @@ void CreateBash()
 			for (int i = 0; i < Norlen; i++)
 				cout << Norchar[i] << " ";
 			cout << endl;
-			if (sel == '2' || sel == '3')
+			if (sel == '2' || sel == '3' || sel == '4')
 			{
 				MedelKebord(20, 1, 30);
 				MedelKebord(20, 0, 30);
@@ -353,7 +356,7 @@ void CreateBash()
 					break;
 		}
 		}
-		if (sel == '2' || sel == '3')
+		if (sel == '2' || sel == '3'||sel=='4')
 		{
 			MedelKebord(20, 1, 30);
 			MedelKebord(20, 0, 30);
