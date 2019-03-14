@@ -33,47 +33,24 @@ int main(int argc, char *argv[])
 		{
 		case '1':
 		{
-			CreateBash();
+			cout << "输入1弹出目录文件进行复制文件名，否则跳过\n>/";
+			char open = _getch();
+			printf("%c\n", open);
+			if (open == '1')
+			system("start cmd /k dir");
+			cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
+			char filename[1024] = { 0 };
+			cin >> filename;
+			cout << "Run >> " << filename << endl;
+			Sleep(800);
+			system("TASKKILL /F /IM cmd.exe /T");
+			OperateMedel(filename);
 			break;
 		}
 		case '2':
 		{
-			char choice = '7';
-			cout << "---------------------------" << endl;
-			cout << "\n\t文件类型： " << endl;
-			cout << "\t1.标准文件后缀类型(_MU.txt)" << endl;
-			cout << "\t2.非标准类型(*.*)" << endl;
-			cout << "\t0.退出程序" << endl;
-			cout << "---------------------------" << endl;
-			cout << "\n>/ ";
-			while (choice<'0' || choice>'2')
-				choice = _getch();
-			printf("%c\n", choice);
-			Sleep(80);
-			system("cls");
-			if (choice == '0') exit(0);
-			
-			switch (choice)
-			{
-			case '1':
-			{
-						cout << "请输入文件名，不要带标准后缀(_MU.txt)\n>/ ";
-						break;
-			}
-			case '2':
-			{
-						cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
-						break;
-			}
-			}
-			char filename[1024] = { 0 };
-			cin >> filename;
-			if (choice == '1')
-				strcat_s(filename, "_MU.txt");
-			cout << "Run >> " << filename << endl;
-			Sleep(800);
-			OperateMedel(filename);
-			break;
+					CreateBash();
+					break;
 		}
 		case '3':
 		{
@@ -93,8 +70,8 @@ char Menu()
 	char choice = '7';
 	cout << "\n\t模拟用户脚本版" << endl;
 	cout << "---------------------------" << endl;
-	cout << "\t1.录入脚本" << endl;
-	cout << "\t2.运行脚本" << endl;
+	cout << "\t1.运行脚本" << endl;
+	cout << "\t2.录入脚本" << endl;
 	cout << "\t3.获取帮助" << endl;
 	cout << "\t0.退出程序" << endl;
 	cout << "---------------------------" << endl;
@@ -723,6 +700,11 @@ void help()
 			"如果运行脚本不正常，请如下操作",
 			"右键程序，选择属性，选择兼容性，选择用管理员权限运行，选择确认即可。",
 			"执行脚本时会自动最小化到任务栏哦！别找不到了",
+			"-------------------------------",
+			"输入文件名执行说明：",
+			"在你选择执行文件时会自动为您弹出程序目录下的文件",
+			"你可以复制名称过来填入",
+			"注意，开始运行之后之前弹出的界面会自动关闭，不必管理",
 			"-------------------------------",
 	};
 	int i = 0;
