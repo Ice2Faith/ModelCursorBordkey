@@ -33,19 +33,42 @@ int main(int argc, char *argv[])
 		{
 		case '1':
 		{
-			cout << "输入1弹出目录文件进行复制文件名，否则跳过\n>/";
-			char open = _getch();
-			printf("%c\n", open);
-			if (open == '1')
-			system("start cmd /k dir");
-			cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
-			char filename[1024] = { 0 };
-			cin >> filename;
-			cout << "Run >> " << filename << endl;
-			Sleep(800);
-			system("TASKKILL /F /IM cmd.exe /T");
-			OperateMedel(filename);
-			break;
+					cout << "\n\t文件名模式" << endl;
+					cout << "---------------------------" << endl;
+					cout << "\t1.默认后缀(_MU.txt)" << endl;
+					cout << "\t2.完全文件名(*.*)" << endl;
+					cout << "\t0.退出程序" << endl;
+					cout << "---------------------------" << endl;
+					cout << "\n>/ ";
+					char model = '7';
+					while (model<'0' || model>'2')
+						model = _getch();
+					printf("%c\n", model);
+					if (model == '0')
+						exit(0);
+					if (model == '2')
+					{
+						cout << "输入1弹出目录文件进行复制文件名，否则跳过\n>/";
+						char open = _getch();
+						printf("%c\n", open);
+						if (open == '1')
+						{
+							cout << "Found those files:\n-----------------------------" << endl;
+							system("dir *.* /b");
+							cout << "-----------------------------\nView end." << endl;
+						}
+							
+					}
+					cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
+					char filename[1024] = { 0 };
+					cin >> filename;
+					if (model == '1')
+						strcat_s(filename, "_MU.txt");
+					cout << "Run >> " << filename << endl;
+					Sleep(800);
+					system("TASKKILL /F /IM cmd.exe /T");
+					OperateMedel(filename);
+					break;
 		}
 		case '2':
 		{
@@ -54,15 +77,15 @@ int main(int argc, char *argv[])
 		}
 		case '3':
 		{
-			help();
-			break;
+					help();
+					break;
 		}
 		default:
 			break;
 		}
-		
+
 	}
-	
+
 	return 0;
 }
 char Menu()
@@ -73,11 +96,17 @@ char Menu()
 	cout << "\t1.运行脚本" << endl;
 	cout << "\t2.录入脚本" << endl;
 	cout << "\t3.获取帮助" << endl;
+	cout << "\t9.打开命令行" << endl;
 	cout << "\t0.退出程序" << endl;
 	cout << "---------------------------" << endl;
 	cout << "\n>/ ";
 	while (choice<'0' || choice>'3')
-		choice=_getch();
+	if ((choice = _getch()) == '9')
+	{
+		cout << "9\nTips>> 您已经入命令行，可以输入 exit 退出命令行，回到程序，继续操作\n" << endl;
+		system("cmd /k dir");
+		cout << "\nTips>> 你现在可以重新选择操作方式\n>/ ";
+	}
 	printf("%c\n", choice);
 	Sleep(80);
 	system("cls");
@@ -92,12 +121,12 @@ void CreateBash()
 	strcat_s(filename, "_MU.txt");
 	cout << "正在为你创建脚本：" << filename << endl;
 	Sleep(1200);
-	char Spechar[50][16] = { "SHIFT", "CONTROL", "ALT", "WIN", "CAPSLOCK","ESC", "ENTER", "TAB", "BACKSPACE", "DELETE", "PRTSC", "SCROLL", "PAUSE", "NUMLOCK", "SPACE", "UP", "DOWN", "LEFT", "RIGHT",
-		"PGUP", "PGDOWN", "HOME", "END", "INSERT", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12","WAITRUN","RANDIN","CMD","POWERSHELL",};
-	int Spekey[50] = { 16, 17, 18, 91,20, 27, 13, 9, 8, 46, 42, 145, 19, 144, 32, 38, 40, 37, 39, 33, 34, 36, 35, 45, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123,281,282,283,284 };
+	char Spechar[50][16] = { "SHIFT", "CONTROL", "ALT", "WIN", "CAPSLOCK", "ESC", "ENTER", "TAB", "BACKSPACE", "DELETE", "PRTSC", "SCROLL", "PAUSE", "NUMLOCK", "SPACE", "UP", "DOWN", "LEFT", "RIGHT",
+		"PGUP", "PGDOWN", "HOME", "END", "INSERT", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "WAITRUN", "RANDIN", "CMD", "POWERSHELL", };
+	int Spekey[50] = { 16, 17, 18, 91, 20, 27, 13, 9, 8, 46, 42, 145, 19, 144, 32, 38, 40, 37, 39, 33, 34, 36, 35, 45, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 281, 282, 283, 284 };
 	char Norchar[64] = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+*`-=[]\\;',./\0" };
 	int Norkey[64] = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 107, 106, 192, 189, 187, 219, 221,
-		220, 186, 222, 188, 190, 191,0 };
+		220, 186, 222, 188, 190, 191, 0 };
 	int Spelen = 0, Norlen = 0;
 	while (Spechar[Spelen][0])
 		Spelen++;
@@ -119,7 +148,7 @@ void CreateBash()
 		cout << sel << endl;
 		Sleep(500);
 		system("cls");
-		
+
 		if (sel != '1')
 		{
 			cout << "可输入字符集,注意大写" << endl;
@@ -129,7 +158,7 @@ void CreateBash()
 					cout << Spechar[i] << " ";
 				cout << endl;
 			}
-			
+
 			for (int i = 0; i < Norlen; i++)
 				cout << Norchar[i] << " ";
 			cout << endl;
@@ -177,7 +206,8 @@ void CreateBash()
 								fprintf_s(bashfile, "k 13 1 30 ENTER\n");
 								fprintf_s(bashfile, "k 13 0 30 ENTER\n");
 								continue;
-							}else
+							}
+							else
 							if (temp == 'T')
 							{
 								fprintf_s(bashfile, "k 9 1 30 TAB\n");
@@ -203,7 +233,7 @@ void CreateBash()
 						fprintf_s(bashfile, "k %d 0 30 %c\n", Norkey[i], Norchar[i]);
 					}
 					fclose(bashfile);
-				break;
+					break;
 		}
 		case '3':
 		{
@@ -255,9 +285,9 @@ void CreateBash()
 							default:
 								break;
 							}
-								
+
 							fprintf_s(bashfile, "k %d 1 %d %s\n", Spekey[i], wtime, Spechar[i]);
-							if (Spekey[i]<281)
+							if (Spekey[i] < 281)
 								fprintf_s(bashfile, "k %d 0 %d %s\n", Spekey[i], wtime, Spechar[i]);
 						}
 					}
@@ -297,7 +327,7 @@ void CreateBash()
 								if (j > Norlen)
 									break;
 							}
-							if (j> Norlen)
+							if (j > Norlen)
 								continue;
 							sprintf_s(outfile[i], "k %d 1 30 %c\n", Norkey[j], Norchar[j]);
 							sprintf_s(outfile[conbilen * 2 - i], "k %d 0 30 %c\n", Norkey[j], Norchar[j]);
@@ -323,7 +353,7 @@ void CreateBash()
 					break;
 		}
 		}
-		if (sel == '2'||sel=='3')
+		if (sel == '2' || sel == '3')
 		{
 			MedelKebord(20, 1, 30);
 			MedelKebord(20, 0, 30);
@@ -387,18 +417,18 @@ void ExtenBordyKey(int key, int set, int wt)
 	case 281:
 	{
 				Sleep(wt);
-			break;
+				break;
 	}
 	case 282:
 	{
 				char Norchar[64] = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
-				int Norkey[64] = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90};
+				int Norkey[64] = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90 };
 				int Norlen = strlen(Norchar);
-				int randkey = rand()% Norlen;
+				int randkey = rand() % Norlen;
 				int key = Norkey[randkey];
 				MedelKebord(key, set, wt);
 				MedelKebord(key, 0, wt);
-		break;
+				break;
 	}
 	case 283:
 	{
@@ -435,10 +465,10 @@ void OperateMedel(char * FileName)
 			count = fscanf_s(fp, "%d%d%d", &key, &set, &wt);
 			if (count != 3)
 				continue;
-			if (key>=281)
+			if (key >= 281)
 				ExtenBordyKey(key, set, wt);
 			else
-			MedelKebord(key, set, wt);
+				MedelKebord(key, set, wt);
 		}
 		else if (mode == 'c')
 		{
@@ -658,9 +688,9 @@ void help()
 			"专属附加功能按键:",
 			"附加按键脚本没有状态0标志，因此只有一行",
 			"当然如果你的脚本有状态0标志行，也会被忽略",
-			"WAITRUN\t\t\t281\t\t暂停脚本运行一秒", 
+			"WAITRUN\t\t\t281\t\t暂停脚本运行一秒",
 			"RANDIN\t\t\t282\t\t随机输入字符1秒15个",
-			"CMD\t\t\t283\t\t打开CMD控制台", 
+			"CMD\t\t\t283\t\t打开CMD控制台",
 			"POWERSHELL\t\t284\t\t打开Powershell",
 			"-------------------------------",
 			"执行文件说明：",
@@ -689,6 +719,10 @@ void help()
 			"1.鼠标点击部分：",
 			"移动鼠标到要点击的地方，注意过程中不要点击，不论左右键都不要",
 			"然后按1标识左键单击，2标识右键单击，5标识结束鼠标录制",
+			"鼠标录制技巧",
+			"滑动到指定位置，按键进行记录点击操作，不要移动鼠标",
+			"鼠标点击刚才的位置进入下一步",
+			"利用Alt+Tab将记录程序移到前台继续记录，依次反复即可",
 			"鼠标录制时时延由你点击的时延决定",
 			"2.普通连续输入(0-9 & A-Z)",
 			"你可以连续输入，直到输入完回车为止，过程中可以有空格和\\N\\T转义字符插入",
@@ -702,9 +736,11 @@ void help()
 			"执行脚本时会自动最小化到任务栏哦！别找不到了",
 			"-------------------------------",
 			"输入文件名执行说明：",
-			"在你选择执行文件时会自动为您弹出程序目录下的文件",
-			"你可以复制名称过来填入",
-			"注意，开始运行之后之前弹出的界面会自动关闭，不必管理",
+			"默认后缀模式：001_MU.txt只能输入001",
+			"完全名称模式：需要后缀，并自动列出目录下文件，提供快捷复制",
+			"命令行工具：",
+			"提供给你快捷删除脚本，命令：del 文件名（完全名称）",
+			"需要删除确认则输入dir查看文件是否还存在",
 			"-------------------------------",
 	};
 	int i = 0;
