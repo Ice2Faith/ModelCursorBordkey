@@ -9,6 +9,7 @@ using namespace std;
 void CreateBash();
 void ReadClickEvent(char * name);
 void help();
+char Menu();
 void OperateMedel(char * FileName);
 void ModelCursor(int x, int y, int cltype, int stime);
 void MedelKebord(int key, int set, int wt);
@@ -26,8 +27,84 @@ int main(int argc, char *argv[])
 			OperateMedel(argv[1]);
 	}
 	else
-	CreateBash();
+	{
+		char choice = Menu();
+		switch (choice)
+		{
+		case '1':
+		{
+			CreateBash();
+			break;
+		}
+		case '2':
+		{
+			char choice = '7';
+			cout << "---------------------------" << endl;
+			cout << "\n\t文件类型： " << endl;
+			cout << "\t1.标准文件后缀类型(_MU.txt)" << endl;
+			cout << "\t2.非标准类型(*.*)" << endl;
+			cout << "\t0.退出程序" << endl;
+			cout << "---------------------------" << endl;
+			cout << "\n>/ ";
+			while (choice<'0' || choice>'2')
+				choice = _getch();
+			printf("%c\n", choice);
+			Sleep(80);
+			system("cls");
+			if (choice == '0') exit(0);
+			
+			switch (choice)
+			{
+			case '1':
+			{
+						cout << "请输入文件名，不要带标准后缀(_MU.txt)\n>/ ";
+						break;
+			}
+			case '2':
+			{
+						cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
+						break;
+			}
+			}
+			char filename[1024] = { 0 };
+			cin >> filename;
+			if (choice == '1')
+				strcat_s(filename, "_MU.txt");
+			cout << "Run >> " << filename << endl;
+			Sleep(800);
+			OperateMedel(filename);
+			break;
+		}
+		case '3':
+		{
+			help();
+			break;
+		}
+		default:
+			break;
+		}
+		
+	}
+	
 	return 0;
+}
+char Menu()
+{
+	char choice = '7';
+	cout << "\n\t模拟用户脚本版" << endl;
+	cout << "---------------------------" << endl;
+	cout << "\t1.录入脚本" << endl;
+	cout << "\t2.运行脚本" << endl;
+	cout << "\t3.获取帮助" << endl;
+	cout << "\t0.退出程序" << endl;
+	cout << "---------------------------" << endl;
+	cout << "\n>/ ";
+	while (choice<'0' || choice>'3')
+		choice=_getch();
+	printf("%c\n", choice);
+	Sleep(80);
+	system("cls");
+	return choice;
 }
 void CreateBash()
 {
@@ -41,9 +118,9 @@ void CreateBash()
 	char Spechar[50][16] = { "SHIFT", "CONTROL", "ALT", "WIN", "CAPSLOCK","ESC", "ENTER", "TAB", "BACKSPACE", "DELETE", "PRTSC", "SCROLL", "PAUSE", "NUMLOCK", "SPACE", "UP", "DOWN", "LEFT", "RIGHT",
 		"PGUP", "PGDOWN", "HOME", "END", "INSERT", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12","WAITRUN","RANDIN","CMD","POWERSHELL",};
 	int Spekey[50] = { 16, 17, 18, 91,20, 27, 13, 9, 8, 46, 42, 145, 19, 144, 32, 38, 40, 37, 39, 33, 34, 36, 35, 45, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123,281,282,283,284 };
-	char Norchar[64] = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+*/`-=[]\\;',./" };
-	int Norkey[64] = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 107, 106, 111, 192, 189, 187, 219, 221,
-		220, 186, 222, 188, 190, 191 };
+	char Norchar[64] = { "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+*`-=[]\\;',./\0" };
+	int Norkey[64] = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 107, 106, 192, 189, 187, 219, 221,
+		220, 186, 222, 188, 190, 191,0 };
 	int Spelen = 0, Norlen = 0;
 	while (Spechar[Spelen][0])
 		Spelen++;
@@ -54,12 +131,13 @@ void CreateBash()
 		system("cls");
 		cout << "请选择录制操作" << endl;
 		cout << "1.鼠标点击" << endl;
-		cout << "2.键盘点击" << endl;
-		cout << "3.组合键输入" << endl;
+		cout << "2.普通连续输入(0-9 & A-Z)" << endl;
+		cout << "3.混合特殊键盘点击(WIN ALT D 9 ...)" << endl;
+		cout << "4.组合键输入" << endl;
 		cout << "0.退出录制" << endl;
 		cout << ">/ ";
 		char sel = '9';
-		while (sel < '0' || sel>'3')
+		while (sel < '0' || sel>'4')
 			sel = _getch();
 		cout << sel << endl;
 		Sleep(500);
@@ -68,9 +146,13 @@ void CreateBash()
 		if (sel != '1')
 		{
 			cout << "可输入字符集,注意大写" << endl;
-			for (int i = 0; i < Spelen; i++)
-				cout << Spechar[i] << " ";
-			cout << endl;
+			if (sel != '2')
+			{
+				for (int i = 0; i < Spelen; i++)
+					cout << Spechar[i] << " ";
+				cout << endl;
+			}
+			
 			for (int i = 0; i < Norlen; i++)
 				cout << Norchar[i] << " ";
 			cout << endl;
@@ -95,6 +177,58 @@ void CreateBash()
 					break;
 		}
 		case '2':
+		{
+					FILE * bashfile = NULL;
+					fopen_s(&bashfile, filename, "a");
+					char temp = '\0';
+					fflush(stdin);
+					cout << "请输入点击序列，换行结束（支持转义字符\"\\N\\T\"和空格）\n>/ ";
+					while (temp != '\n')
+					{
+						temp = getchar();
+						if (temp == ' ')
+						{
+							fprintf_s(bashfile, "k 32 1 30 SPACE\n");
+							fprintf_s(bashfile, "k 32 0 30 SPACE\n");
+							continue;
+						}
+						if (temp == '\\')
+						{
+							temp = getchar();
+							if (temp == 'N')
+							{
+								fprintf_s(bashfile, "k 13 1 30 ENTER\n");
+								fprintf_s(bashfile, "k 13 0 30 ENTER\n");
+								continue;
+							}else
+							if (temp == 'T')
+							{
+								fprintf_s(bashfile, "k 9 1 30 TAB\n");
+								fprintf_s(bashfile, "k 9 0 30 TAB\n");
+								continue;
+							}
+							else
+							{
+								fprintf_s(bashfile, "k 220 1 30 \\\n");
+								fprintf_s(bashfile, "k 220 0 30 \\\n");
+							}
+						}
+						int i = 0;
+						while (Norchar[i] != temp)
+						{
+							i++;
+							if (i > Norlen)
+								break;
+						}
+						if (i > Norlen)
+							continue;
+						fprintf_s(bashfile, "k %d 1 30 %c\n", Norkey[i], Norchar[i]);
+						fprintf_s(bashfile, "k %d 0 30 %c\n", Norkey[i], Norchar[i]);
+					}
+					fclose(bashfile);
+				break;
+		}
+		case '3':
 		{
 					char temp[16] = { "0110" };
 					int getlen = 0;
@@ -153,10 +287,10 @@ void CreateBash()
 					fclose(bashfile);
 					break;
 		}
-		case '3':
+		case '4':
 		{
-					char temp[10][16] = { 0 };
-					char outfile[22][15] = { 0 };
+					char temp[10][20] = { 0 };
+					char outfile[22][40] = { 0 };
 					FILE * bashfile = NULL;
 					fopen_s(&bashfile, filename, "a");
 					cout << "请输入点击字符，每个字符之间空格隔开，00结束" << endl;
@@ -201,8 +335,8 @@ void CreateBash()
 							}
 							if (j > Spelen)
 								continue;
-							sprintf_s(outfile[i], "k %d 1 30 %s\n", Spekey[j], Spechar[j]);
-							sprintf_s(outfile[conbilen * 2 - i], "k %d 0 30 %s\n", Spekey[j], Spechar[j]);
+							sprintf_s(outfile[i], sizeof(outfile[i]), "k %d 1 30 %s\n", Spekey[j], Spechar[j]);
+							sprintf_s(outfile[conbilen * 2 - i], sizeof(outfile[i]), "k %d 0 30 %s\n", Spekey[j], Spechar[j]);
 						}
 
 					}
@@ -264,7 +398,6 @@ void ReadClickEvent(char * name)
 		get = '\0';
 		Sleep(10);
 	}
-
 	fclose(click);
 	system("mode con lines=35 cols=120");
 }
@@ -576,11 +709,14 @@ void help()
 			"在我的电脑上这个位置是开始菜单",
 			"-------------------------------",
 			"文件脚本录入说明",
-			"鼠标操作部分：",
+			"1.鼠标点击部分：",
 			"移动鼠标到要点击的地方，注意过程中不要点击，不论左右键都不要",
 			"然后按1标识左键单击，2标识右键单击，5标识结束鼠标录制",
 			"鼠标录制时时延由你点击的时延决定",
-			"键盘点击和组合键操作部分：",
+			"2.普通连续输入(0-9 & A-Z)",
+			"你可以连续输入，直到输入完回车为止，过程中可以有空格和\\N\\T转义字符插入",
+			"注意，其他转义字符不识别",
+			"3/4.混合特殊键盘点击(WIN ALT D 9 ...) & 组合键输入：",
 			"请注意锁定大写进行输入，并确定输入的正确性",
 			"就算是单个字符输入也要空格隔开",
 			"录入不正确的按键将会被丢弃，容易造成达不到预期的效果",
