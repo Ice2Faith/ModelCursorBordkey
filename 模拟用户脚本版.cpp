@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 		{
 		case '1':
 		{
-					char listbody[100][1024] = { 0 };
+					char listbody[256][1024] = { 0 };
 					char * list[100] = { 0 };
 					for (int i = 0; i < 100; i++)
 						list[i] = listbody[i];
@@ -119,6 +119,11 @@ void GetFilesList(int * len, char *list[])
 		list[llen][slen - 1] = '\0';
 		if ((strcmp(list[llen], "temp.tp")!=0 )&& slen!=0)
 			llen++;
+		if (llen > 255)
+		{
+			llen = 255;
+			break;
+		}
 	}
 	*len = llen;
 	fclose(FileList);
