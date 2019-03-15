@@ -12,12 +12,14 @@ void help();
 char Menu();
 void OperateMedel(char * FileName);
 void ModelCursor(int x, int y, int cltype, int stime);
+void ModelCursorRoll(int mx, int my, int rdata, int wait);
 void MedelKebord(int key, int set, int wt);
+void ModelCursorMove(int mx, int my, int mx1, int my2, int wite);
 void GetFilesList(int * len, char *list[]);
 int main(int argc, char *argv[])
 {
 	rename(argv[0], "模拟用户脚本版.exe");
-	system("title 模拟用户脚本版 designer Ice2Faith");
+	system("title 模拟用户脚本版 V1.0 designer Ice2Faith");
 	system("color 02");
 	srand((unsigned)time(NULL));
 	if (argc > 1)
@@ -64,7 +66,7 @@ int main(int argc, char *argv[])
 							cout << "Found those files:\n-----------------------------" << endl;
 							for (int i = 0; i < len; i++)
 							{
-								cout << i <<". "<< list[i] << endl;
+								cout << i << ". " << list[i] << endl;
 							}
 							cout << "-----------------------------\nView end,Please select\n>/ ";
 							int sel = -1;
@@ -77,7 +79,7 @@ int main(int argc, char *argv[])
 							cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
 							cin >> filename;
 						}
-							
+
 					}
 					if (model == '1')
 						strcat_s(filename, "_MU.txt");
@@ -111,13 +113,13 @@ void GetFilesList(int * len, char *list[])
 	system("dir *.* /b >> temp.tp");
 	FILE * FileList = NULL;
 	fopen_s(&FileList, "temp.tp", "r");
-	int llen=0;
+	int llen = 0;
 	while (!feof(FileList))
 	{
 		fgets(list[llen], 1024, FileList);
 		int slen = strlen(list[llen]);
 		list[llen][slen - 1] = '\0';
-		if ((strcmp(list[llen], "temp.tp")!=0 )&& slen!=0)
+		if ((strcmp(list[llen], "temp.tp") != 0) && slen != 0)
 			llen++;
 		if (llen > 255)
 		{
@@ -160,9 +162,9 @@ void CreateBash()
 	cout << "请输入脚本名字\n>/ ";
 	cin >> filename;
 	fflush(stdin);
-	cout << "输入 1 使用默认后缀，否则不使用"<<endl;
+	cout << "输入 1 使用默认后缀，否则不使用" << endl;
 	if (_getch() == '1')
-	strcat_s(filename, "_MU.txt");
+		strcat_s(filename, "_MU.txt");
 	cout << "正在为你创建脚本：" << filename << endl;
 	Sleep(1200);
 	char Spechar[50][16] = { "SHIFT", "CONTROL", "ALT", "WIN", "CAPSLOCK", "ESC", "ENTER", "TAB", "BACKSPACE", "DELETE", "PRTSC", "SCROLL", "PAUSE", "NUMLOCK", "SPACE", "UP", "DOWN", "LEFT", "RIGHT",
@@ -215,7 +217,9 @@ void CreateBash()
 		else
 		{
 			cout << "即将进入鼠标捕获界面，请不要在点击鼠标了哦！！" << endl;
-			cout << "操作提示，移动鼠标到点击位置，按下1标识左键点击，2表示右键点击，5表示结束捕获" << endl;
+			cout << "操作提示，移动鼠标到点击位置" << endl;
+			cout << "按下1标识左键点击，2表示右键点击，5表示结束捕获" << endl;
+			cout << "按下3标识开始拖拽，4表示结束拖拽，6表示上滚，7表示下滚" << endl;
 			Sleep(2000);
 		}
 		if (sel == '0')break;
@@ -397,7 +401,7 @@ void CreateBash()
 					break;
 		}
 		}
-		if (sel == '2' || sel == '3'||sel=='4')
+		if (sel == '2' || sel == '3' || sel == '4')
 		{
 			MedelKebord(20, 1, 30);
 			MedelKebord(20, 0, 30);
@@ -414,11 +418,13 @@ void ReadClickEvent(char * name)
 	POINT point;
 	char get = '\0';
 	long beft = time(NULL), pret = time(NULL), subt = 0;
+	int mx = 0, my = 0, mx1 = 0, my1 = 0, c3 = 0, c4 = 0;
 	while (1)
 	{
 		GetCursorPos(&point);
 		system("cls");
 		cout << "Point:" << point.x << "," << point.y << endl;
+		int lock = 0;
 		if (_kbhit())
 			get = _getch();
 		if (get == '5')
@@ -445,6 +451,38 @@ void ReadClickEvent(char * name)
 				subt = 300;
 			fprintf(click, "c %d %d %d %d CRIGHT\n", point.x, point.y, 0, subt);
 			cout << "右键";
+		}
+		if (get == '6')
+		{
+			fprintf(click, "r %d %d 1 80 ROOLUP\n", point.x, point.y);
+			cout << "上滚";
+		}
+		if (get == '7')
+		{
+			fprintf(click, "r %d %d 0 80 ROOLDOWN\n", point.x, point.y);
+			cout << "下滚";
+		}
+		if (c3 == 1 && c4 == 1)
+		{
+			fprintf(click, "m %d %d %d %d 60 CMOVE\n", mx, my, mx1, my1);
+			cout << "拖拽完成";
+			c3 = 0;
+			c4 = 0;
+		}
+		if (get == '4'&&c4 == 0)
+		{
+			mx1 = point.x;
+			my1 = point.y;
+			c4 = 1;
+			cout << "拖拽释放";
+		}
+		if (get == '3'&&c3 == 0)
+		{
+			mx = point.x;
+			my = point.y;
+			c3 = 1;
+			cout << "拖拽开始";
+			lock = 1;
 		}
 		get = '\0';
 		Sleep(10);
@@ -522,9 +560,59 @@ void OperateMedel(char * FileName)
 			ModelCursor(x, y, cltype, stime);
 
 		}
+		else if (mode == 'm')
+		{
+			int mx, my, mx1, my1, wite;
+			count = fscanf_s(fp, "%d%d%d%d%d", &mx, &my, &mx1, &my1, &wite);
+			if (count != 5)
+				continue;
+			ModelCursorMove(mx, my, mx1, my1, wite);
+		}
+		else if (mode == 'r')
+		{
+			int mx, my, roll, wait;
+			count = fscanf_s(fp, "%d%d%d%d", &mx, &my, &roll, &wait);
+			if (count != 4)
+				continue;
+			ModelCursorRoll(mx, my, roll, wait);
+		}
 		else continue;
 	}
 	fclose(fp);
+}
+void ModelCursorRoll(int mx, int my, int rdata, int wait)
+{
+	SetCursorPos(mx, my);
+	if (rdata == 1)
+		mouse_event(MOUSEEVENTF_WHEEL, 0, 0, 120, 0);
+	else if (rdata == 0)
+		mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -120, 0);
+	Sleep(wait);
+
+}
+void ModelCursorMove(int mx, int my, int mx1, int my1, int wite)
+{
+	int addx = mx1 - mx >= 0 ? 1 : -1;
+	int addy = my1 - my >= 0 ? 1 : -1;
+	SetCursorPos(mx, my);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0); //左键按下
+	for (int i = mx; i < mx1; i++)
+	{
+		SetCursorPos(i, my);
+		mx = i;
+		if (i % 3 == 0)
+			Sleep(1);
+	}
+	for (int j = my; j < my1; j++)
+	{
+		SetCursorPos(mx, j);
+		my = j;
+		if (j % 3 == 0)
+			Sleep(1);
+	}
+	SetCursorPos(mx1, my1);
+	mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);  //左键松开
+	Sleep(wite);
 }
 void MedelKebord(int key, int set, int wt)
 {
@@ -758,11 +846,22 @@ void help()
 			"854：从上到下第854个点",
 			"状态：1左键单击，0右键单击",
 			"在我的电脑上这个位置是开始菜单",
+			"拖拽文件参数说明：",
+			"m 源横坐标 源纵坐标 目的横坐标 目的纵坐标 时延 (操作类型提示)",
+			"例如：m 290 296 1012 308 60 CMOVE",
+			"表示从290,296位置拖拽到1012,308位置，60毫秒后执行下一条指令",
+			"特别注意：只有按4之后才会记录到此次操作，也才是操作的顺序",
+			"鼠标滚轮参数说明：",
+			"m 源横坐标 源纵坐标 目的横坐标 目的纵坐标 时延 (操作类型提示)",
+			"例如：r 306 486 1 80 ROOLUP",
+			"表示从306,486位置上滚一格，80毫秒后执行下一条指令",
 			"-------------------------------",
 			"文件脚本录入说明",
 			"1.鼠标点击部分：",
 			"移动鼠标到要点击的地方，注意过程中不要点击，不论左右键都不要",
 			"然后按1标识左键单击，2标识右键单击，5标识结束鼠标录制",
+			"特别的：按下3标识开始拖拽，4表示结束拖拽，6表示中心滚轮上滚，7表示下滚",
+			"按下3期间以后其他按键均会无效，包括5，所以记得按4结束拖拽",
 			"鼠标录制技巧",
 			"滑动到指定位置，按键进行记录点击操作，不要移动鼠标",
 			"鼠标点击刚才的位置进入下一步",
