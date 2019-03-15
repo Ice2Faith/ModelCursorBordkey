@@ -85,8 +85,13 @@ int main(int argc, char *argv[])
 						}
 
 					}
-					if (model == '1')	//加上标准后缀
-						strcat_s(filename, "_MU.txt");
+				if (model == '1')   //使用默认拓展名时自动加后缀
+                                        {
+                                        cout << "请输入文件名(不要带默认后缀)\n>/ ";
+					cin >> filename;
+                                        strcat_s(filename, "_MU.txt");
+                                        }
+
 					cout << "Run >> " << filename << endl;
 					Sleep(800);
 					system("TASKKILL /F /IM cmd.exe /T");	//关闭cmd
