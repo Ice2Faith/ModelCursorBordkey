@@ -6,34 +6,34 @@
 #include<conio.h>
 #include<stdlib.h>
 using namespace std;
-void OperateLoop(FILE * fp);
-void CreateBash();
-void ReadClickEvent(char * name);
-void help();
-char Menu();
-void OperateMedel(char * FileName);
-void ModelCursor(int x, int y, int cltype, int stime);
-void ModelCursorRoll(int mx, int my, int rdata, int wait);
-void MedelKebord(int key, int set, int wt);
-void ModelCursorMove(int mx, int my, int mx1, int my2, int wite);
-void GetFilesList(int * len, char *list[]);
+void OperateLoop(FILE * fp);	//执行循环操作子函数
+void CreateBash();	//创建脚本函数
+void ReadClickEvent(char * name);	//获取鼠标点击事件函数
+void help();	//帮助函数
+char Menu();	//主菜单函数
+void OperateMedel(char * FileName);	//执行脚本主控函数
+void ModelCursor(int x, int y, int cltype, int stime);	//模拟鼠标点击函数
+void ModelCursorRoll(int mx, int my, int rdata, int wait);	//模拟鼠标滚轮函数
+void MedelKebord(int key, int set, int wt);	//模拟键盘点击函数
+void ModelCursorMove(int mx, int my, int mx1, int my2, int wite);	//模拟鼠标拖动函数
+void GetFilesList(int * len, char *list[]);	//获取可执行脚本列表函数
 int main(int argc, char *argv[])
 {
-	rename(argv[0], "ģ���û��ű���.exe");
-	system("title ģ���û��ű��� V1.0 designer Ice2Faith");
-	system("color f0");
+	rename(argv[0], "模拟用户脚本版.exe");
+	system("title 模拟用户脚本版 V1.0 designer Ice2Faith");
+	system("color f0");	//设置控制台样式
 	srand((unsigned)time(NULL));
 	if (argc > 1)
 	{
 		if (strcmp(argv[1], "help") == 0)
 			help();
 		else
-			OperateMedel(argv[1]);
+			OperateMedel(argv[1]);	//判断带入参数是否需要打印帮助信息，否则按照执行脚本执行
 	}
 	else
 	{
 		char choice = Menu();
-		switch (choice)
+		switch (choice)	//获取用户选择并进行分支跳转
 		{
 		case '1':
 		{
@@ -44,11 +44,11 @@ int main(int argc, char *argv[])
 					int len = 0;
 					GetFilesList(&len, list);
 					char filename[1024] = { 0 };
-					cout << "\n\t�ļ���ģʽ" << endl;
+					cout << "\n\t文件名模式" << endl;
 					cout << "---------------------------" << endl;
-					cout << "\t1.Ĭ�Ϻ�׺(_MU.txt)" << endl;
-					cout << "\t2.��ȫ�ļ���(*.*)" << endl;
-					cout << "\t0.�˳�����" << endl;
+					cout << "\t1.默认后缀(_MU.txt)" << endl;
+					cout << "\t2.完全文件名(*.*)" << endl;
+					cout << "\t0.退出程序" << endl;
 					cout << "---------------------------" << endl;
 					cout << "\n>/ ";
 					char model = '7';
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 						exit(0);
 					if (model == '2')
 					{
-						cout << "����1����Ŀ¼�ļ�����ѡ�񣬷����ֶ�����\n>/";
+						cout << "输入1弹出目录文件进行选择，否则手动输入\n>/";
 						char open = _getch();
 						printf("%c\n", open);
 						if (open == '1')
@@ -77,20 +77,20 @@ int main(int argc, char *argv[])
 						}
 						else
 						{
-							cout << "�������ļ�������ȫ����(������׺)\n>/ ";
+							cout << "请输入文件名，完全名称(包括后缀)\n>/ ";
 							cin >> filename;
 						}
 
 					}
-					if (model == '1')   //ʹ��Ĭ����չ��ʱ�Զ��Ӻ�׺
+					if (model == '1')   //使用默认拓展名时自动加后缀
 					{
-						cout << "�������ļ���(��Ҫ��Ĭ�Ϻ�׺)\n>/ ";
+						cout << "请输入文件名(不要带默认后缀)\n>/ ";
 						cin >> filename;
 						strcat_s(filename, "_MU.txt");
 					}
 					cout << "Run >> " << filename << endl;
 					Sleep(800);
-					system("TASKKILL /F /IM cmd.exe /T");
+					system("TASKKILL /F /IM cmd.exe /T");	//关闭多余cmd子进程，自己占用不会杀死自己
 					OperateMedel(filename);
 					break;
 		}
@@ -112,10 +112,10 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-void GetFilesList(int * len, char *list[])
+void GetFilesList(int * len, char *list[])	//返回列表长度，列表保存位置
 {
 	remove("temp.tp");
-	system("dir *.* /b >> temp.tp");
+	system("dir *.* /b >> temp.tp");	//利用cmd命令获取文件列表保存到临时文件
 	FILE * FileList = NULL;
 	fopen_s(&FileList, "temp.tp", "r");
 	int llen = 0;
@@ -139,21 +139,21 @@ void GetFilesList(int * len, char *list[])
 char Menu()
 {
 	char choice = '7';
-	cout << "\n\tģ���û��ű���" << endl;
+	cout << "\n\t模拟用户脚本版" << endl;
 	cout << "---------------------------" << endl;
-	cout << "\t1.���нű�" << endl;
-	cout << "\t2.¼��ű�" << endl;
-	cout << "\t3.��ȡ����" << endl;
-	cout << "\t9.��������" << endl;
-	cout << "\t0.�˳�����" << endl;
+	cout << "\t1.运行脚本" << endl;
+	cout << "\t2.录入脚本" << endl;
+	cout << "\t3.获取帮助" << endl;
+	cout << "\t9.打开命令行" << endl;
+	cout << "\t0.退出程序" << endl;
 	cout << "---------------------------" << endl;
 	cout << "\n>/ ";
 	while (choice<'0' || choice>'3')
 	if ((choice = _getch()) == '9')
 	{
-		cout << "9\nTips>> ���Ѿ��������У��������� exit �˳������У��ص����򣬼�������\n" << endl;
+		cout << "9\nTips>> 您已经入命令行，可以输入 exit 退出命令行，回到程序，继续操作\n" << endl;
 		system("cmd /k dir");
-		cout << "\nTips>> �����ڿ�������ѡ�������ʽ\n>/ ";
+		cout << "\nTips>> 你现在可以重新选择操作方式\n>/ ";
 	}
 	printf("%c\n", choice);
 	Sleep(80);
@@ -163,14 +163,14 @@ char Menu()
 void CreateBash()
 {
 	char filename[1024] = { 0 };
-	cout << "��������Դ���һ���ű�" << endl;
-	cout << "������ű�����\n>/ ";
+	cout << "现在你可以创建一个脚本" << endl;
+	cout << "请输入脚本名字\n>/ ";
 	cin >> filename;
 	fflush(stdin);
-	cout << "���� 1 ʹ��Ĭ�Ϻ�׺������ʹ��" << endl;
+	cout << "输入 1 使用默认后缀，否则不使用" << endl;
 	if (_getch() == '1')
 		strcat_s(filename, "_MU.txt");
-	cout << "����Ϊ�㴴���ű���" << filename << endl;
+	cout << "正在为你创建脚本：" << filename << endl;
 	Sleep(1200);
 	char Spechar[50][16] = { "SHIFT", "CONTROL", "ALT", "WIN", "CAPSLOCK", "ESC", "ENTER", "TAB", "BACKSPACE", "DELETE", "PRTSC", "SCROLL", "PAUSE", "NUMLOCK", "SPACE", "UP", "DOWN", "LEFT", "RIGHT",
 		"PGUP", "PGDOWN", "HOME", "END", "INSERT", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "WAITRUN", "RANDIN", "CMD", "POWERSHELL", };
@@ -190,15 +190,15 @@ void CreateBash()
 
 		system("cls");
 		if (inloop == 1) cout << "Roll..." << endl;
-		cout << "��ѡ��¼�Ʋ���" << endl;
-		cout << "1.�����" << endl;
-		cout << "2.��ͨ��������(0-9 & A-Z)" << endl;
-		cout << "3.���������̵��(WIN ALT D 9 ...)" << endl;
-		cout << "4.��ϼ�����" << endl;
-		cout << "5.����ע��" << endl;
-		cout << "6.��ʼѭ��" << endl;
-		cout << "7.����ѭ��" << endl;
-		cout << "0.�˳�¼��" << endl;
+		cout << "请选择录制操作" << endl;
+		cout << "1.鼠标点击" << endl;
+		cout << "2.普通连续输入(0-9 & A-Z)" << endl;
+		cout << "3.混合特殊键盘点击(WIN ALT D 9 ...)" << endl;
+		cout << "4.组合键输入" << endl;
+		cout << "5.添加注释" << endl;
+		cout << "6.开始循环" << endl;
+		cout << "7.结束循环" << endl;
+		cout << "0.退出录制" << endl;
 		cout << ">/ ";
 		char sel = '9';
 		while (sel < '0' || sel>'7')
@@ -209,7 +209,7 @@ void CreateBash()
 
 		if (sel == '2'||sel!='3'||sel=='4')
 		{
-			cout << "�������ַ���,ע���д" << endl;
+			cout << "可输入字符集,注意大写" << endl;
 			if (sel != '2')
 			{
 				for (int i = 0; i < Spelen; i++)
@@ -228,10 +228,10 @@ void CreateBash()
 		}
 		else if (sel == '1')
 		{
-			cout << "����������겶����棬�벻Ҫ�ڵ�������Ŷ����" << endl;
-			cout << "������ʾ���ƶ���굽���λ��" << endl;
-			cout << "����1��ʶ��������2��ʾ�Ҽ������5��ʾ��������" << endl;
-			cout << "����3��ʶ��ʼ��ק��4��ʾ������ק��6��ʾ�Ϲ���7��ʾ�¹�" << endl;
+			cout << "即将进入鼠标捕获界面，请不要在点击鼠标了哦！！" << endl;
+			cout << "操作提示，移动鼠标到点击位置" << endl;
+			cout << "按下1标识左键点击，2表示右键点击，5表示结束捕获" << endl;
+			cout << "按下3标识开始拖拽，4表示结束拖拽，6表示上滚，7表示下滚" << endl;
 			Sleep(2000);
 		}
 		if (sel == '0')break;
@@ -248,7 +248,7 @@ void CreateBash()
 					fopen_s(&bashfile, filename, "a");
 					char temp = '\0';
 					fflush(stdin);
-					cout << "�����������У����н�����֧��ת���ַ�\"\\N\\T\"�Ϳո�\n>/ ";
+					cout << "请输入点击序列，换行结束（支持转义字符\"\\N\\T\"和空格）\n>/ ";
 					while (temp != '\n')
 					{
 						temp = getchar();
@@ -301,7 +301,7 @@ void CreateBash()
 					int getlen = 0;
 					FILE * bashfile = NULL;
 					fopen_s(&bashfile, filename, "a");
-					cout << "���������ַ���ÿ���ַ�֮��ո������00����" << endl;
+					cout << "请输入点击字符，每个字符之间空格隔开，00结束" << endl;
 					while (strcmp(temp, "00") != 0)
 					{
 						cin >> temp;
@@ -360,7 +360,7 @@ void CreateBash()
 					char outfile[22][40] = { 0 };
 					FILE * bashfile = NULL;
 					fopen_s(&bashfile, filename, "a");
-					cout << "���������ַ���ÿ���ַ�֮��ո������00����" << endl;
+					cout << "请输入点击字符，每个字符之间空格隔开，00结束" << endl;
 					int i = 0;
 					while (strcmp(temp[i], "00") != 0)
 					{
@@ -414,7 +414,7 @@ void CreateBash()
 		}
 		case '5':
 		{
-					cout << "������һ��ע��" << endl<<">/ ";
+					cout << "请输入一行注释" << endl<<">/ ";
 					char declare[1024] = { 0 };
 					fflush(stdin);
 					gets_s(declare);
@@ -428,7 +428,7 @@ void CreateBash()
 		{
 					FILE * bashfile = NULL;
 					fopen_s(&bashfile, filename, "a");
-					cout << "������ѭ����������һ��ѭ���ȴ�ʱ��\n>/ ";
+					cout << "请输入循环次数和下一次循环等待时间\n>/ ";
 					cin >> loop>>waitloop;
 					if (loop < 1)
 						loop = 1;
@@ -487,7 +487,7 @@ void ReadClickEvent(char * name)
 			if (subt == 0)
 				subt = 300;
 			fprintf(click, "c %d %d %d %d CLEFT\n", point.x, point.y, 1, subt);
-			cout << "���";
+			cout << "左键";
 		}
 		if (get == '2')
 		{
@@ -498,22 +498,22 @@ void ReadClickEvent(char * name)
 			if (subt == 0)
 				subt = 300;
 			fprintf(click, "c %d %d %d %d CRIGHT\n", point.x, point.y, 0, subt);
-			cout << "�Ҽ�";
+			cout << "右键";
 		}
 		if (get == '6')
 		{
 			fprintf(click, "r %d %d 1 80 ROOLUP\n", point.x, point.y);
-			cout << "�Ϲ�";
+			cout << "上滚";
 		}
 		if (get == '7')
 		{
 			fprintf(click, "r %d %d 0 80 ROOLDOWN\n", point.x, point.y);
-			cout << "�¹�";
+			cout << "下滚";
 		}
 		if (c3 == 1 && c4 == 1)
 		{
 			fprintf(click, "m %d %d %d %d 60 CMOVE\n", mx, my, mx1, my1);
-			cout << "��ק���";
+			cout << "拖拽完成";
 			c3 = 0;
 			c4 = 0;
 		}
@@ -522,14 +522,14 @@ void ReadClickEvent(char * name)
 			mx1 = point.x;
 			my1 = point.y;
 			c4 = 1;
-			cout << "��ק�ͷ�";
+			cout << "拖拽释放";
 		}
 		if (get == '3'&&c3 == 0)
 		{
 			mx = point.x;
 			my = point.y;
 			c3 = 1;
-			cout << "��ק��ʼ";
+			cout << "拖拽开始";
 			lock = 1;
 		}
 		get = '\0';
@@ -588,7 +588,7 @@ void OperateLoop(FILE * fp)
 	mind mindlist[1024];
 	int mindcount = 0;
 	int num1, num2, num3, num4, num5;
-	count = fscanf_s(fp, "%d%d%d", &loop, &looptime,&waitloop);
+	count = fscanf_s(fp, "%d%d%d", &loop, &looptime,&waitloop);	//获取循环块参数，不对则返回
 	if (count != 3)
 		return;
 	if (loop == 1)
@@ -596,7 +596,7 @@ void OperateLoop(FILE * fp)
 		
 		while (!feof(fp))
 		{
-			fscanf_s(fp, "%c", &mode);
+			fscanf_s(fp, "%c", &mode);	//获取类型和类容保存
 			if (mode == 'k')
 			{
 				count = fscanf_s(fp, "%d%d%d", &num1, &num2, &num3);
@@ -660,7 +660,7 @@ void OperateLoop(FILE * fp)
 			else continue;
 		}
 		////////////////////////////////////////////
-		for (int i = 0; i < looptime; i++)
+		for (int i = 0; i < looptime; i++)	//执行循环
 		{
 			for (int j = 0; j < mindcount; j++)
 			{
@@ -705,7 +705,7 @@ void OperateMedel(char * FileName)
 	{
 		fscanf_s(fp, "%c", &mode);
 		char temp[20] = { 0 };
-		if (mode == 'l')
+		if (mode == 'l')	//判断是否是循环块
 		{
 			 OperateLoop(fp);
 		}
@@ -763,7 +763,7 @@ void ModelCursorMove(int mx, int my, int mx1, int my1, int wite)
 	int addx = mx1 - mx >= 0 ? 1 : -1;
 	int addy = my1 - my >= 0 ? 1 : -1;
 	SetCursorPos(mx, my);
-	mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0); //�������
+	mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0); //左键按下
 	for (int i = mx; i < mx1; i++)
 	{
 		SetCursorPos(i, my);
@@ -779,7 +779,7 @@ void ModelCursorMove(int mx, int my, int mx1, int my1, int wite)
 			Sleep(1);
 	}
 	SetCursorPos(mx1, my1);
-	mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);  //����ɿ�
+	mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);  //左键松开
 	Sleep(wite);
 }
 void MedelKebord(int key, int set, int wt)
@@ -795,13 +795,13 @@ void ModelCursor(int x, int y, int cltype, int stime)
 	SetCursorPos(x, y);
 	if (cltype == 1)
 	{
-		mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0); //�������
-		mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);  //����ɿ�
+		mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0); //左键按下
+		mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);  //左键松开
 	}
 	if (cltype == 0)
 	{
-		mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0); //�Ҽ�����
-		mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);  //�Ҽ��ɿ�
+		mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0); //右键按下
+		mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);  //右键松开
 	}
 	Sleep(stime);
 }
@@ -809,7 +809,7 @@ void ModelCursor(int x, int y, int cltype, int stime)
 void help()
 {
 	char deca[400][80]{
-		"�������\t\t��Ӧֵ\t\t��Ӧ��",
+		"虚拟键码\t\t对应值\t\t对应键",
 			"Designer: Ice2Faith",
 			"-------------------------------",
 			"VK_F1\t\t\t112\t\tF1",
@@ -866,14 +866,14 @@ void help()
 			"VK_SHIFT\t\t16\t\tShift",
 			"VK_CONTROL\t\t17\t\tCtrl",
 			"VK_MENU\t\t\t18\t\tAlt",
-			"VK_LSHIFT\t\t160\t\t��shift",
-			"VK_RSHIFT\t\t161\t\t��shift",
-			"VK_LCONTROL\t\t162\t\t��control",
-			"VK_RCONTROL\t\t163\t\t��control",
-			"VK_LMENU\t\t164\t\t��Alt",
-			"VK_RMENU\t\t165\t\t��Alt",
-			"VK_LWIN\t\t\t91\t\t��WIN",
-			"VK_RWIN\t\t\t92\t\t��WIN",
+			"VK_LSHIFT\t\t160\t\t左shift",
+			"VK_RSHIFT\t\t161\t\t右shift",
+			"VK_LCONTROL\t\t162\t\t左control",
+			"VK_RCONTROL\t\t163\t\t右control",
+			"VK_LMENU\t\t164\t\t左Alt",
+			"VK_RMENU\t\t165\t\t右Alt",
+			"VK_LWIN\t\t\t91\t\t左WIN",
+			"VK_RWIN\t\t\t92\t\t右WIN",
 			"VK_SPACE\t\t32\t\tSpace",
 			"VK_BACK\t\t\t8\t\tBackspace",
 			"VK_RETURN\t\t13\t\tEnter",
@@ -889,9 +889,9 @@ void help()
 			"VK_OEM_COMMA\t\t188\t\t, <",
 			"VK_OEM_PERIOD\t\t190\t\t. >",
 			"VK_OEM_2\t\t191\t\t/ ?",
-			"VK_LBUTTON\t\t1\t\t������",
-			"VK_RBUTTON\t\t2\t\t����Ҽ�",
-			"VK_MBUTTON\t\t4\t\t����м�",
+			"VK_LBUTTON\t\t1\t\t鼠标左键",
+			"VK_RBUTTON\t\t2\t\t鼠标右键",
+			"VK_MBUTTON\t\t4\t\t鼠标中键",
 			"VK_INSERT\t\t45\t\tInsert",
 			"VK_DELETE\t\t46\t\tDelete",
 			"VK_PRIOR\t\t33\t\tPage Up",
@@ -906,22 +906,22 @@ void help()
 			"VK_SCROLL\t\t145\t\tScroll Lock",
 			"VK_PAUSE\t\t19\t\tPause Break",
 			"VK_NUMLOCK\t\t144\t\tNum Lock",
-			"VK_NUMPAD0\t\t96\t\tС���� 0",
-			"VK_NUMPAD1\t\t97\t\tС���� 1",
-			"VK_NUMPAD2\t\t98\t\tС���� 2",
-			"VK_NUMPAD3\t\t99\t\tС���� 3",
-			"VK_NUMPAD4\t\t100\t\tС���� 4",
-			"VK_NUMPAD5\t\t101\t\tС���� 5",
-			"VK_NUMPAD6\t\t102\t\tС���� 6",
-			"VK_NUMPAD7\t\t103\t\tС���� 7",
-			"VK_NUMPAD8\t\t104\t\tС���� 8",
-			"VK_NUMPAD9\t\t105\t\tС���� 9",
-			"VK_MULTIPLY\t\t106\t\tС���� *",
-			"VK_ADD\t\t\t107\t\tС���� +",
-			"VK_SEPARATOR\t\t108\t\tС���� Enter",
-			"VK_SUBTRACT\t\t109\t\tС���� -",
-			"VK_DECIMAL\t\t110\t\tС���� .",
-			"VK_DIVIDE\t\t111\t\tС���� /",
+			"VK_NUMPAD0\t\t96\t\t小键盘 0",
+			"VK_NUMPAD1\t\t97\t\t小键盘 1",
+			"VK_NUMPAD2\t\t98\t\t小键盘 2",
+			"VK_NUMPAD3\t\t99\t\t小键盘 3",
+			"VK_NUMPAD4\t\t100\t\t小键盘 4",
+			"VK_NUMPAD5\t\t101\t\t小键盘 5",
+			"VK_NUMPAD6\t\t102\t\t小键盘 6",
+			"VK_NUMPAD7\t\t103\t\t小键盘 7",
+			"VK_NUMPAD8\t\t104\t\t小键盘 8",
+			"VK_NUMPAD9\t\t105\t\t小键盘 9",
+			"VK_MULTIPLY\t\t106\t\t小键盘 *",
+			"VK_ADD\t\t\t107\t\t小键盘 +",
+			"VK_SEPARATOR\t\t108\t\t小键盘 Enter",
+			"VK_SUBTRACT\t\t109\t\t小键盘 -",
+			"VK_DECIMAL\t\t110\t\t小键盘 .",
+			"VK_DIVIDE\t\t111\t\t小键盘 /",
 			"VK_SELECT\t\t41\t\tSelect",
 			"VK_EXECUTE\t\t43\t\tExecute",
 			"VK_SNAPSHOT\t\t44\t\tSnapshot",
@@ -931,13 +931,13 @@ void help()
 			"VK_VOLUME_MUTE\t\t173\t\tVolumeMute",
 			"VK_VOLUME_DOWN\t\t174\t\tVolumeDown",
 			"VK_VOLUME_UP\t\t175\t\tVolumeUp",
-			"VK_BROWSER_BACK\t\t166\t\t�����back",
-			"VK_BROWSER_FORWARD\t167\t\t�����forward",
-			"VK_BROWSER_REFRESH\t168\t\t�����refresh",
-			"VK_BROWSER_STOP\t\t169\t\t�����\t\t",
-			"VK_BROWSER_SEARCH\t170\t\t�����search",
-			"VK_BROWSER_FAVORITES\t171\t\t�����favorites",
-			"VK_BROWSER_HOME\t\t172\t\t�����home",
+			"VK_BROWSER_BACK\t\t166\t\t浏览器back",
+			"VK_BROWSER_FORWARD\t167\t\t浏览器forward",
+			"VK_BROWSER_REFRESH\t168\t\t浏览器refresh",
+			"VK_BROWSER_STOP\t\t169\t\t浏览器\t\t",
+			"VK_BROWSER_SEARCH\t170\t\t浏览器search",
+			"VK_BROWSER_FAVORITES\t171\t\t浏览器favorites",
+			"VK_BROWSER_HOME\t\t172\t\t浏览器home",
 			"VK_F13\t\t\t124",
 			"VK_F14\t\t\t125",
 			"VK_F15\t\t\t126",
@@ -985,73 +985,73 @@ void help()
 			"VK_PA1\t\t\t253",
 			"VK_OEM_CLEAR\t\t254",
 			"-------------------------------",
-			"ר�����ӹ��ܰ���:",
-			"���Ӱ����ű�û��״̬0��־�����ֻ��һ��",
-			"��Ȼ�����Ľű���״̬0��־�У�Ҳ�ᱻ����",
-			"WAITRUN\t\t\t281\t\t��ͣ�ű�����һ��",
-			"RANDIN\t\t\t282\t\t��������ַ�1��15��",
-			"CMD\t\t\t283\t\t��CMD����̨",
-			"POWERSHELL\t\t284\t\t��Powershell",
+			"专属附加功能按键:",
+			"附加按键脚本没有状态0标志，因此只有一行",
+			"当然如果你的脚本有状态0标志行，也会被忽略",
+			"WAITRUN\t\t\t281\t\t暂停脚本运行一秒",
+			"RANDIN\t\t\t282\t\t随机输入字符1秒15个",
+			"CMD\t\t\t283\t\t打开CMD控制台",
+			"POWERSHELL\t\t284\t\t打开Powershell",
 			"-------------------------------",
-			"ִ���ļ�˵����",
-			"����ִ�б�ʶ��ֻ��c��k��������ʶ�ᱻ����",
-			"����˵����k ���� ״̬ ʱ�� (����������ʾ)",
-			"���磺k 91 1 30 ��WIN��",
-			"��ʶ�Ǽ��̲�������Win�����ӳ�30�����ִ����һ��",
-			"״̬��1���£�0̧��",
-			"��˳���������",
+			"执行文件说明：",
+			"行首执行标识符只有c和k，其他标识会被忽略",
+			"参数说明：k 按键 状态 时延 (操作类型提示)",
+			"例如：k 91 1 30 （WIN）",
+			"标识是键盘操作按下Win键，延迟30毫秒后执行下一条",
+			"状态：1按下，0抬起",
+			"因此常规点击如下",
 			"k 91 1 30",
 			"k 91 0 30",
-			"��ϼ���ʶ��WIN+SΪ��",
+			"组合键标识：WIN+S为例",
 			"k 91 1 30",
 			"k 83 1 30",
 			"k 83 0 30",
 			"k 91 0 30",
-			"����˵����k ������ ������ ״̬ ʱ�� (����������ʾ)",
-			"���磺c 18 854 1 1200 CLEFT",
-			"��ʶ��������������λ��18-854��λ�ã��ӳ�1200�����ִ����һ��",
-			"18�������ҵ�18����",
-			"854�����ϵ��µ�854����",
-			"״̬��1���������0�Ҽ�����",
-			"���ҵĵ��������λ���ǿ�ʼ�˵�",
-			"��ק�ļ�����˵����",
-			"m Դ������ Դ������ Ŀ�ĺ����� Ŀ�������� ʱ�� (����������ʾ)",
-			"���磺m 290 296 1012 308 60 CMOVE",
-			"��ʾ��290,296λ����ק��1012,308λ�ã�60�����ִ����һ��ָ��",
-			"�ر�ע�⣺ֻ�а�4֮��Ż��¼���˴β�����Ҳ���ǲ�����˳��",
-			"�����ֲ���˵����",
-			"m Դ������ Դ������ Ŀ�ĺ����� Ŀ�������� ʱ�� (����������ʾ)",
-			"���磺r 306 486 1 80 ROOLUP",
-			"��ʾ��306,486λ���Ϲ�һ��80�����ִ����һ��ָ��",
+			"参数说明：k 横坐标 纵坐标 状态 时延 (操作类型提示)",
+			"例如：c 18 854 1 1200 CLEFT",
+			"标识是鼠标操作左键点击位置18-854的位置，延迟1200毫秒后执行下一条",
+			"18：从左到右第18个点",
+			"854：从上到下第854个点",
+			"状态：1左键单击，0右键单击",
+			"在我的电脑上这个位置是开始菜单",
+			"拖拽文件参数说明：",
+			"m 源横坐标 源纵坐标 目的横坐标 目的纵坐标 时延 (操作类型提示)",
+			"例如：m 290 296 1012 308 60 CMOVE",
+			"表示从290,296位置拖拽到1012,308位置，60毫秒后执行下一条指令",
+			"特别注意：只有按4之后才会记录到此次操作，也才是操作的顺序",
+			"鼠标滚轮参数说明：",
+			"m 源横坐标 源纵坐标 目的横坐标 目的纵坐标 时延 (操作类型提示)",
+			"例如：r 306 486 1 80 ROOLUP",
+			"表示从306,486位置上滚一格，80毫秒后执行下一条指令",
 			"-------------------------------",
-			"�ļ��ű�¼��˵��",
-			"1.��������֣�",
-			"�ƶ���굽Ҫ����ĵط���ע������в�Ҫ������������Ҽ�����Ҫ",
-			"Ȼ��1��ʶ���������2��ʶ�Ҽ�������5��ʶ�������¼��",
-			"�ر�ģ�����3��ʶ��ʼ��ק��4��ʾ������ק��6��ʾ���Ĺ����Ϲ���7��ʾ�¹�",
-			"����3�ڼ��Ժ���������������Ч������5�����Լǵð�4������ק",
-			"���¼�Ƽ���",
-			"������ָ��λ�ã��������м�¼�����������Ҫ�ƶ����",
-			"������ղŵ�λ�ý�����һ��",
-			"����Alt+Tab����¼�����Ƶ�ǰ̨������¼�����η�������",
-			"���¼��ʱʱ����������ʱ�Ӿ���",
-			"2.��ͨ��������(0-9 & A-Z)",
-			"������������룬ֱ��������س�Ϊֹ�������п����пո��\\N\\Tת���ַ�����",
-			"ע�⣬����ת���ַ���ʶ��",
-			"3/4.���������̵��(WIN ALT D 9 ...) & ��ϼ����룺",
-			"��ע��������д�������룬��ȷ���������ȷ��",
-			"�����ǵ����ַ�����ҲҪ�ո����",
-			"¼�벻��ȷ�İ������ᱻ������������ɴﲻ��Ԥ�ڵ�Ч��",
-			"������нű��������������²���",
-			"�Ҽ�����ѡ�����ԣ�ѡ������ԣ�ѡ���ù���ԱȨ�����У�ѡ��ȷ�ϼ��ɡ�",
-			"ִ�нű�ʱ���Զ���С����������Ŷ�����Ҳ�����",
+			"文件脚本录入说明",
+			"1.鼠标点击部分：",
+			"移动鼠标到要点击的地方，注意过程中不要点击，不论左右键都不要",
+			"然后按1标识左键单击，2标识右键单击，5标识结束鼠标录制",
+			"特别的：按下3标识开始拖拽，4表示结束拖拽，6表示中心滚轮上滚，7表示下滚",
+			"按下3期间以后其他按键均会无效，包括5，所以记得按4结束拖拽",
+			"鼠标录制技巧",
+			"滑动到指定位置，按键进行记录点击操作，不要移动鼠标",
+			"鼠标点击刚才的位置进入下一步",
+			"利用Alt+Tab将记录程序移到前台继续记录，依次反复即可",
+			"鼠标录制时时延由你点击的时延决定",
+			"2.普通连续输入(0-9 & A-Z)",
+			"你可以连续输入，直到输入完回车为止，过程中可以有空格和\\N\\T转义字符插入",
+			"注意，其他转义字符不识别",
+			"3/4.混合特殊键盘点击(WIN ALT D 9 ...) & 组合键输入：",
+			"请注意锁定大写进行输入，并确定输入的正确性",
+			"就算是单个字符输入也要空格隔开",
+			"录入不正确的按键将会被丢弃，容易造成达不到预期的效果",
+			"如果运行脚本不正常，请如下操作",
+			"右键程序，选择属性，选择兼容性，选择用管理员权限运行，选择确认即可。",
+			"执行脚本时会自动最小化到任务栏哦！别找不到了",
 			"-------------------------------",
-			"�����ļ���ִ��˵����",
-			"Ĭ�Ϻ�׺ģʽ��001_MU.txtֻ������001",
-			"��ȫ����ģʽ����Ҫ��׺�����Զ��г�Ŀ¼���ļ����ṩ��ݸ���",
-			"�����й��ߣ�",
-			"�ṩ������ɾ���ű������del �ļ�������ȫ���ƣ�",
-			"��Ҫɾ��ȷ��������dir�鿴�ļ��Ƿ񻹴���",
+			"输入文件名执行说明：",
+			"默认后缀模式：001_MU.txt只能输入001",
+			"完全名称模式：需要后缀，并自动列出目录下文件，提供快捷复制",
+			"命令行工具：",
+			"提供给你快捷删除脚本，命令：del 文件名（完全名称）",
+			"需要删除确认则输入dir查看文件是否还存在",
 			"-------------------------------",
 	};
 	int i = 0;
