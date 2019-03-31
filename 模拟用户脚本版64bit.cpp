@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 							int sel = -1;
 							while (sel<0 || sel>len)
 								cin >> sel;
-							strcpy(filename, list[sel]);
+							strcpy_s(filename, list[sel]);
 						}
 						else
 						{
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 					{
 						cout << "请输入文件名(不要带默认后缀)\n>/ ";
 						cin >> filename;
-						strcat(filename, "_MU.txt");
+						strcat_s(filename, "_MU.txt");
 					}
 					cout << "Run >> " << filename << endl;
 					Sleep(800);
@@ -117,7 +117,7 @@ void GetFilesList(int * len, char *list[])
 	remove("temp.tp");
 	system("dir *.* /b >> temp.tp");
 	FILE * FileList = NULL;
-	FileList=fopen("temp.tp", "r");
+	fopen_s(&FileList, "temp.tp", "r");
 	int llen = 0;
 	while (!feof(FileList))
 	{
@@ -169,7 +169,7 @@ void CreateBash()
 	fflush(stdin);
 	cout << "输入 1 使用默认后缀，否则不使用" << endl;
 	if (_getch() == '1')
-		strcat(filename, "_MU.txt");
+		strcat_s(filename, "_MU.txt");
 	cout << "正在为你创建脚本：" << filename << endl;
 	Sleep(1200);
 	char Spechar[50][16] = { "SHIFT", "CONTROL", "ALT", "WIN", "CAPSLOCK", "ESC", "ENTER", "TAB", "BACKSPACE", "DELETE", "PRTSC", "SCROLL", "PAUSE", "NUMLOCK", "SPACE", "UP", "DOWN", "LEFT", "RIGHT",
@@ -239,8 +239,8 @@ void CreateBash()
 			if (inloop==1)
 			{
 				FILE * bashfile = NULL;
-                bashfile=fopen(filename, "a");
-				fprintf(bashfile, "l 0 %d %d LOOP\n", loop, waitloop);
+				fopen_s(&bashfile, filename, "a");
+				fprintf_s(bashfile, "l 0 %d %d LOOP\n", loop, waitloop);
 				inloop = 0;
 				fclose(bashfile);
 			}
@@ -256,7 +256,7 @@ void CreateBash()
 		case '2':
 		{
 					FILE * bashfile = NULL;
-					bashfile=fopen(filename, "a");
+					fopen_s(&bashfile, filename, "a");
 					char temp = '\0';
 					fflush(stdin);
 					cout << "请输入点击序列，换行结束（支持转义字符\"\\N\\T\"和空格）\n>/ ";
@@ -265,8 +265,8 @@ void CreateBash()
 						temp = getchar();
 						if (temp == ' ')
 						{
-							fprintf(bashfile, "k 32 1 30 SPACE\n");
-							fprintf(bashfile, "k 32 0 30 SPACE\n");
+							fprintf_s(bashfile, "k 32 1 30 SPACE\n");
+							fprintf_s(bashfile, "k 32 0 30 SPACE\n");
 							continue;
 						}
 						if (temp == '\\')
@@ -274,21 +274,21 @@ void CreateBash()
 							temp = getchar();
 							if (temp == 'N')
 							{
-								fprintf(bashfile, "k 13 1 30 ENTER\n");
-								fprintf(bashfile, "k 13 0 30 ENTER\n");
+								fprintf_s(bashfile, "k 13 1 30 ENTER\n");
+								fprintf_s(bashfile, "k 13 0 30 ENTER\n");
 								continue;
 							}
 							else
 							if (temp == 'T')
 							{
-								fprintf(bashfile, "k 9 1 30 TAB\n");
-								fprintf(bashfile, "k 9 0 30 TAB\n");
+								fprintf_s(bashfile, "k 9 1 30 TAB\n");
+								fprintf_s(bashfile, "k 9 0 30 TAB\n");
 								continue;
 							}
 							else
 							{
-								fprintf(bashfile, "k 220 1 30 \\\n");
-								fprintf(bashfile, "k 220 0 30 \\\n");
+								fprintf_s(bashfile, "k 220 1 30 \\\n");
+								fprintf_s(bashfile, "k 220 0 30 \\\n");
 							}
 						}
 						int i = 0;
@@ -300,8 +300,8 @@ void CreateBash()
 						}
 						if (i > Norlen)
 							continue;
-						fprintf(bashfile, "k %d 1 30 %c\n", Norkey[i], Norchar[i]);
-						fprintf(bashfile, "k %d 0 30 %c\n", Norkey[i], Norchar[i]);
+						fprintf_s(bashfile, "k %d 1 30 %c\n", Norkey[i], Norchar[i]);
+						fprintf_s(bashfile, "k %d 0 30 %c\n", Norkey[i], Norchar[i]);
 					}
 					fclose(bashfile);
 					break;
@@ -311,7 +311,7 @@ void CreateBash()
 					char temp[16] = { "0110" };
 					int getlen = 0;
 					FILE * bashfile = NULL;
-					bashfile=fopen(filename, "a");
+					fopen_s(&bashfile, filename, "a");
 					cout << "请输入点击字符，每个字符之间空格隔开，00结束" << endl;
 					while (strcmp(temp, "00") != 0)
 					{
@@ -329,8 +329,8 @@ void CreateBash()
 							}
 							if (i > Norlen)
 								continue;
-							fprintf(bashfile, "k %d 1 30 %c\n", Norkey[i], Norchar[i]);
-							fprintf(bashfile, "k %d 0 30 %c\n", Norkey[i], Norchar[i]);
+							fprintf_s(bashfile, "k %d 1 30 %c\n", Norkey[i], Norchar[i]);
+							fprintf_s(bashfile, "k %d 0 30 %c\n", Norkey[i], Norchar[i]);
 						}
 						else
 						{
@@ -357,9 +357,9 @@ void CreateBash()
 								break;
 							}
 
-							fprintf(bashfile, "k %d 1 %d %s\n", Spekey[i], wtime, Spechar[i]);
+							fprintf_s(bashfile, "k %d 1 %d %s\n", Spekey[i], wtime, Spechar[i]);
 							if (Spekey[i] < 281)
-								fprintf(bashfile, "k %d 0 %d %s\n", Spekey[i], wtime, Spechar[i]);
+								fprintf_s(bashfile, "k %d 0 %d %s\n", Spekey[i], wtime, Spechar[i]);
 						}
 					}
 					fclose(bashfile);
@@ -370,7 +370,7 @@ void CreateBash()
 					char temp[10][20] = { 0 };
 					char outfile[22][40] = { 0 };
 					FILE * bashfile = NULL;
-					bashfile=fopen( filename, "a");
+					fopen_s(&bashfile, filename, "a");
 					cout << "请输入点击字符，每个字符之间空格隔开，00结束" << endl;
 					int i = 0;
 					while (strcmp(temp[i], "00") != 0)
@@ -400,8 +400,8 @@ void CreateBash()
 							}
 							if (j > Norlen)
 								continue;
-							sprintf(outfile[i], "k %d 1 30 %c\n", Norkey[j], Norchar[j]);
-							sprintf(outfile[conbilen * 2 - i], "k %d 0 30 %c\n", Norkey[j], Norchar[j]);
+							sprintf_s(outfile[i], "k %d 1 30 %c\n", Norkey[j], Norchar[j]);
+							sprintf_s(outfile[conbilen * 2 - i], "k %d 0 30 %c\n", Norkey[j], Norchar[j]);
 						}
 						else
 						{
@@ -413,13 +413,13 @@ void CreateBash()
 							}
 							if (j > Spelen)
 								continue;
-							sprintf(outfile[i],  "k %d 1 30 %s\n", Spekey[j], Spechar[j]);
-							sprintf(outfile[conbilen * 2 - i],  "k %d 0 30 %s\n", Spekey[j], Spechar[j]);
+							sprintf_s(outfile[i], sizeof(outfile[i]), "k %d 1 30 %s\n", Spekey[j], Spechar[j]);
+							sprintf_s(outfile[conbilen * 2 - i], sizeof(outfile[i]), "k %d 0 30 %s\n", Spekey[j], Spechar[j]);
 						}
 
 					}
 					for (int i = 0; i <= conbilen * 2; i++)
-						fprintf(bashfile, outfile[i]);
+						fprintf_s(bashfile, outfile[i]);
 					fclose(bashfile);
 					break;
 		}
@@ -428,24 +428,24 @@ void CreateBash()
 					cout << "请输入一行注释" << endl<<">/ ";
 					char declare[1024] = { 0 };
 					fflush(stdin);
-					gets(declare);
+					gets_s(declare);
 					FILE * bashfile = NULL;
-					bashfile=fopen( filename, "a");
-					fprintf(bashfile, "# %s\n", declare);
+					fopen_s(&bashfile, filename, "a");
+					fprintf_s(bashfile, "# %s\n", declare);
 					fclose(bashfile);
 					break;
 		}
 		case '6':
 		{
 					FILE * bashfile = NULL;
-					bashfile=fopen( filename, "a");
+					fopen_s(&bashfile, filename, "a");
 					cout << "请输入循环次数和下一次循环等待时间\n>/ ";
 					cin >> loop>>waitloop;
 					if (loop < 1)
 						loop = 1;
 					if (waitloop < 0)
 						waitloop = 30;
-					fprintf(bashfile, "l 1 %d %d LOOP\n",loop,waitloop);
+					fprintf_s(bashfile, "l 1 %d %d LOOP\n",loop,waitloop);
 					inloop = 1;
 					fclose(bashfile);
 					break;
@@ -453,8 +453,8 @@ void CreateBash()
 		case '7':
 		{
 					FILE * bashfile = NULL;
-					bashfile=fopen( filename, "a");
-					fprintf(bashfile, "l 0 %d %d LOOP\n", loop, waitloop);
+					fopen_s(&bashfile, filename, "a");
+					fprintf_s(bashfile, "l 0 %d %d LOOP\n", loop, waitloop);
 					inloop = 0;
 					fclose(bashfile);
 					break;
@@ -472,8 +472,8 @@ void ReadClickEvent(char * name)
 	system("mode con lines=3 cols=20");
 	FILE * click = NULL;
 	char path[1024] = { "\0" };
-	strcat(path, name);
-	click=fopen(path, "a");
+	strcat_s(path, name);
+	fopen_s(&click, path, "a");
 	POINT point;
 	char get = '\0';
 	long beft = time(NULL), pret = time(NULL), subt = 0;
@@ -599,18 +599,18 @@ void OperateLoop(FILE * fp)
 	mind mindlist[1024];
 	int mindcount = 0;
 	int num1, num2, num3, num4, num5;
-	count = fscanf(fp, "%d%d%d", &loop, &looptime,&waitloop);
+	count = fscanf_s(fp, "%d%d%d", &loop, &looptime,&waitloop);
 	if (count != 3)
 		return;
 	if (loop == 1)
 	{
-
+		
 		while (!feof(fp))
 		{
-			fscanf(fp, "%c", &mode);
+			fscanf_s(fp, "%c", &mode);
 			if (mode == 'k')
 			{
-				count = fscanf(fp, "%d%d%d", &num1, &num2, &num3);
+				count = fscanf_s(fp, "%d%d%d", &num1, &num2, &num3);
 				if (count != 3)
 					continue;
 				mindlist[mindcount].type = 'k';
@@ -623,7 +623,7 @@ void OperateLoop(FILE * fp)
 			}
 			else if (mode == 'c')
 			{
-				count = fscanf(fp, "%d%d%d%d", &num1, &num2, &num3, &num4);
+				count = fscanf_s(fp, "%d%d%d%d", &num1, &num2, &num3, &num4);
 				if (count != 4)
 					continue;
 				mindlist[mindcount].type = 'c';
@@ -636,7 +636,7 @@ void OperateLoop(FILE * fp)
 			}
 			else if (mode == 'm')
 			{
-				count = fscanf(fp, "%d%d%d%d%d", &num1, &num2, &num3, &num4, &num5);
+				count = fscanf_s(fp, "%d%d%d%d%d", &num1, &num2, &num3, &num4, &num5);
 				if (count != 5)
 					continue;
 				mindlist[mindcount].type = 'm';
@@ -649,7 +649,7 @@ void OperateLoop(FILE * fp)
 			}
 			else if (mode == 'r')
 			{
-				count = fscanf(fp, "%d%d%d%d", &num1, &num2, &num3, &num4);
+				count = fscanf_s(fp, "%d%d%d%d", &num1, &num2, &num3, &num4);
 				if (count != 4)
 					continue;
 				mindlist[mindcount].type = 'r';
@@ -662,7 +662,7 @@ void OperateLoop(FILE * fp)
 			}
 			else if (mode == 'l')
 			{
-				count = fscanf(fp, "%d%d%d", &loop, &looptime,&waitloop);
+				count = fscanf_s(fp, "%d%d%d", &loop, &looptime,&waitloop);
 				if (count != 3)
 					continue;
 				if (loop == 0)
@@ -706,7 +706,7 @@ void OperateMedel(char * FileName)
 	HWND consle = GetForegroundWindow();
 	ShowWindow(consle, SW_MINIMIZE);
 	FILE * fp = NULL;
-	fp=fopen( FileName, "r");
+	fopen_s(&fp, FileName, "r");
 	if (!fp) return;
 	char mode = '\0';
 	int key = -1, set = -1, wt = 0;
@@ -714,7 +714,7 @@ void OperateMedel(char * FileName)
 	int count = 0;
 	while (!feof(fp))
 	{
-		fscanf(fp, "%c", &mode);
+		fscanf_s(fp, "%c", &mode);
 		char temp[20] = { 0 };
 		if (mode == 'l')
 		{
@@ -723,7 +723,7 @@ void OperateMedel(char * FileName)
 		else
 		if (mode == 'k')
 		{
-			count = fscanf(fp, "%d%d%d", &key, &set, &wt);
+			count = fscanf_s(fp, "%d%d%d", &key, &set, &wt);
 			if (count != 3)
 				continue;
 			if (key >= 281)
@@ -733,7 +733,7 @@ void OperateMedel(char * FileName)
 		}
 		else if (mode == 'c')
 		{
-			count = fscanf(fp, "%d%d%d%d", &x, &y, &cltype, &stime);
+			count = fscanf_s(fp, "%d%d%d%d", &x, &y, &cltype, &stime);
 			if (count != 4)
 				continue;
 			ModelCursor(x, y, cltype, stime);
@@ -742,7 +742,7 @@ void OperateMedel(char * FileName)
 		else if (mode == 'm')
 		{
 			int mx, my, mx1, my1, wite;
-			count = fscanf(fp, "%d%d%d%d%d", &mx, &my, &mx1, &my1, &wite);
+			count = fscanf_s(fp, "%d%d%d%d%d", &mx, &my, &mx1, &my1, &wite);
 			if (count != 5)
 				continue;
 			ModelCursorMove(mx, my, mx1, my1, wite);
@@ -750,7 +750,7 @@ void OperateMedel(char * FileName)
 		else if (mode == 'r')
 		{
 			int mx, my, roll, wait;
-			count = fscanf(fp, "%d%d%d%d", &mx, &my, &roll, &wait);
+			count = fscanf_s(fp, "%d%d%d%d", &mx, &my, &roll, &wait);
 			if (count != 4)
 				continue;
 			ModelCursorRoll(mx, my, roll, wait);
