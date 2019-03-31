@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
 	rename(argv[0], "模拟用户脚本版.exe");
 	system("title 模拟用户脚本版 V1.0 designer Ice2Faith");
-	system("color f0");
+	system("color 0A");
 	srand((unsigned)time(NULL));
 	if (argc > 1)
 	{
@@ -207,7 +207,7 @@ void CreateBash()
 		Sleep(500);
 		system("cls");
 
-		if (sel == '2'||sel!='3'||sel=='4')
+		if (sel == '2'||sel=='3'||sel=='4')
 		{
 			cout << "可输入字符集,注意大写" << endl;
 			if (sel != '2')
